@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign in · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>HealthCare+ Hospital Platform</h1>
+</header>
+
+<div class="login-container">
+    <div class="login-box">
+
+        <h2>Welcome back</h2>
+        <p class="muted">Sign in to continue to your workspace</p>
+
+        <form id="loginForm">
+
+            <label class="field-label" for="username">Email</label>
+            <input type="email" id="username" placeholder="you@hospital.org" required autocomplete="username">
+
+            <label class="field-label" for="password">Password</label>
+            <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+
+            <button type="submit" id="loginBtn" class="btn-primary">Login</button>
+
+        </form>
+
+        <p id="error" class="error-text" role="alert"></p>
+
+        <p class="link">
+            New to the platform?
+            <a href="register.html">Create an account</a>
+        </p>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <p>© 2026 HealthCare+ · Educational hospital management demo</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

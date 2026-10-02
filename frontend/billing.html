@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Billing · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .billing-grid { display: grid; grid-template-columns: 1fr 350px; gap: 1.5rem; }
+        .billing-form { display: flex; flex-direction: column; gap: 1rem; }
+        .form-section { background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .form-section h3 { margin: 0 0 0.75rem; font-size: 0.9rem; color: #64748b; text-transform: uppercase; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+        .items-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .items-table th, .items-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        .items-table th { background: #f1f5f9; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .items-table input { width: 100%; padding: 0.35rem; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 0.85rem; }
+        .items-table .col-qty { width: 60px; }
+        .items-table .col-price { width: 90px; }
+        .items-table .col-total { width: 90px; text-align: right; }
+        .items-table .col-action { width: 40px; text-align: center; }
+        .summary-panel { background: #0f172a; color: white; padding: 1.25rem; border-radius: 12px; position: sticky; top: 1rem; }
+        .summary-panel h3 { margin: 0 0 1rem; font-size: 1rem; }
+        .summary-line { display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.9rem; }
+        .summary-line.discount { color: #4ade80; }
+        .summary-line.total { font-size: 1.25rem; font-weight: 700; border-top: 2px solid #334155; margin-top: 0.5rem; padding-top: 0.75rem; }
+        .summary-line.balance { color: #f87171; }
+        .btn-add-item { background: #e2e8f0; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+        .btn-add-item:hover { background: #cbd5e1; }
+        .btn-remove { background: #fee2e2; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; cursor: pointer; color: #dc2626; }
+        .btn-remove:hover { background: #fecaca; }
+        .btn-generate { background: linear-gradient(180deg, #0d9488 0%, #0f766e 100%); color: white; border: none; padding: 0.875rem; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 1rem; width: 100%; }
+        .btn-generate:hover { filter: brightness(1.05); }
+        .doctor-fee-display { font-size: 0.8rem; color: #0d9488; font-weight: 600; margin-top: 0.25rem; }
+        .bill-search { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .bill-search input { flex: 1; }
+        .status-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+        .status-chip { padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; cursor: pointer; background: #e2e8f0; }
+        .status-chip.active { background: #0d9488; color: white; }
+        @media (max-width: 900px) { .billing-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>HealthCare+</h2>
+    <div class="nav-actions">
+        <button type="button" class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <a href="dashboard.html">Home</a>
+        <a href="appointment.html">Appointments</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="billing.html" class="active-nav">Billing</a>
+        <a href="ai.html">AI triage</a>
+        <a href="staff.html" class="nav-staff-only hidden">Staff desk</a>
+    </div>
+
+    <div class="content content-wide">
+        <header class="page-header">
+            <h1>Billing & Invoicing</h1>
+            <p class="lede">Create professional medical invoices with doctor-specific fees, itemized services, GST calculations, and payment tracking.</p>
+        </header>
+
+        <div class="billing-grid">
+            <!-- Billing Form -->
+            <div class="billing-form">
+                <!-- Patient Details -->
+                <div class="form-section">
+                    <h3>Patient Information</h3>
+                    <div class="form-row">
+                        <div>
+                            <label class="field-label" for="patientName">Full Name *</label>
+                            <input type="text" id="patientName" placeholder="Patient full name" required>
+                        </div>
+                        <div>
+                            <label class="field-label" for="patientPhone">Phone</label>
+                            <input type="tel" id="patientPhone" placeholder="10-digit number">
+                        </div>
+                    </div>
+                    <div class="form-row-3">
+                        <div>
+                            <label class="field-label" for="patientAge">Age</label>
+                            <input type="number" id="patientAge" placeholder="Years" min="0" max="150">
+                        </div>
+                        <div>
+                            <label class="field-label" for="patientGender">Gender</label>
+                            <select id="patientGender">
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="field-label" for="patientEmail">Email</label>
+                            <input type="email" id="patientEmail" placeholder="Email address">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Selection -->
+                <div class="form-section">
+                    <h3>Consulting Doctor</h3>
+                    <label class="field-label" for="billingDoctor">Select Doctor *</label>
+                    <select id="billingDoctor" onchange="updateDoctorFee()" required>
+                        <option value="">Choose a doctor...</option>
+                        <option value="Dr. Sharma|Cardiologist|800">Dr. Sharma (Cardiologist) - ₹800</option>
+                        <option value="Dr. Mehta|Neurologist|750">Dr. Mehta (Neurologist) - ₹750</option>
+                        <option value="Dr. Singh|Orthopedic|600">Dr. Singh (Orthopedic) - ₹600</option>
+                        <option value="Dr. Verma|Dermatologist|550">Dr. Verma (Dermatologist) - ₹550</option>
+                        <option value="Dr. Patel|Pediatrician|400">Dr. Patel (Pediatrician) - ₹400</option>
+                        <option value="Dr. Gupta|Oncologist|900">Dr. Gupta (Oncologist) - ₹900</option>
+                        <option value="Dr. Kumar|General Surgeon|500">Dr. Kumar (General Surgeon) - ₹500</option>
+                        <option value="Dr. Reddy|ENT Specialist|500">Dr. Reddy (ENT) - ₹500</option>
+                        <option value="Dr. Iyer|Ophthalmologist|500">Dr. Iyer (Eye) - ₹500</option>
+                        <option value="Dr. Nair|Psychiatrist|450">Dr. Nair (Psychiatrist) - ₹450</option>
+                        <option value="Dr. Joshi|Gynecologist|600">Dr. Joshi (Gynecologist) - ₹600</option>
+                        <option value="Dr. Rao|Urologist|650">Dr. Rao (Urologist) - ₹650</option>
+                        <option value="Dr. Desai|Gastroenterologist|600">Dr. Desai (Gastro) - ₹600</option>
+                        <option value="Dr. Malhotra|Pulmonologist|550">Dr. Malhotra (Pulmonologist) - ₹550</option>
+                        <option value="Dr. Banerjee|Nephrologist|600">Dr. Banerjee (Nephrologist) - ₹600</option>
+                        <option value="Dr. Choudhary|Endocrinologist|500">Dr. Choudhary (Endocrinologist) - ₹500</option>
+                        <option value="Dr. Saxena|Rheumatologist|500">Dr. Saxena (Rheumatologist) - ₹500</option>
+                        <option value="Dr. Khanna|Plastic Surgeon|1000">Dr. Khanna (Plastic Surgeon) - ₹1,000</option>
+                        <option value="Dr. Agarwal|Dentist|350">Dr. Agarwal (Dentist) - ₹350</option>
+                        <option value="Dr. Bhatia|Physiotherapist|400">Dr. Bhatia (Physio) - ₹400</option>
+                        <option value="Dr. Menon|Radiologist|450">Dr. Menon (Radiologist) - ₹450</option>
+                        <option value="Dr. Yadav|Pathologist|400">Dr. Yadav (Pathologist) - ₹400</option>
+                        <option value="Dr. Pandey|Anesthesiologist|450">Dr. Pandey (Anesthesia) - ₹450</option>
+                        <option value="Dr. Ghosh|Hematologist|500">Dr. Ghosh (Hematologist) - ₹500</option>
+                        <option value="Dr. Kapoor|General Physician|400">Dr. Kapoor (General Physician) - ₹400</option>
+                        <option value="Dr. Jain|Infectious Disease Specialist|550">Dr. Jain (Infectious Disease) - ₹550</option>
+                        <option value="Dr. Arora|Vascular Surgeon|750">Dr. Arora (Vascular Surgeon) - ₹750</option>
+                        <option value="Dr. Prasad|Geriatrician|500">Dr. Prasad (Geriatrician) - ₹500</option>
+                        <option value="Dr. Kaur|Sports Medicine Specialist|600">Dr. Kaur (Sports Medicine) - ₹600</option>
+                        <option value="Dr. Mishra|Allergist & Immunologist|500">Dr. Mishra (Allergist) - ₹500</option>
+                    </select>
+                    <div id="doctorFeeDisplay" class="doctor-fee-display" style="display:none;"></div>
+                </div>
+
+                <!-- Services/Items -->
+                <div class="form-section">
+                    <h3>Services & Procedures</h3>
+                    <table class="items-table" id="itemsTable">
+                        <thead>
+                            <tr>
+                                <th>Service/Item</th>
+                                <th class="col-qty">Qty</th>
+                                <th class="col-price">Rate (₹)</th>
+                                <th class="col-total">Amount</th>
+                                <th class="col-action"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn-add-item" onclick="addItemRow()">+ Add Service</button>
+                </div>
+
+                <!-- Tax & Discount -->
+                <div class="form-section">
+                    <h3>Tax & Discount</h3>
+                    <div class="form-row-3">
+                        <div>
+                            <label class="field-label" for="taxRate">GST Rate (%)</label>
+                            <input type="number" id="taxRate" value="18" min="0" max="100" onchange="calculateTotals()">
+                        </div>
+                        <div>
+                            <label class="field-label" for="discountPercent">Discount (%)</label>
+                            <input type="number" id="discountPercent" value="0" min="0" max="100" onchange="calculateTotals()">
+                        </div>
+                        <div>
+                            <label class="field-label" for="dueDate">Due Date</label>
+                            <input type="date" id="dueDate">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="form-section">
+                    <h3>Additional Notes</h3>
+                    <textarea id="billNotes" rows="2" style="width:100%; padding:0.5rem; border:1px solid #e2e8f0; border-radius:6px; font-family:inherit; font-size:0.9rem;" placeholder="Any special instructions or notes..."></textarea>
+                </div>
+
+                <button type="button" class="btn-generate" onclick="createEnhancedBill()">Generate Invoice</button>
+                <p id="billMsg" class="message-line" aria-live="polite"></p>
+            </div>
+
+            <!-- Summary Panel -->
+            <div class="summary-panel">
+                <h3>Bill Summary</h3>
+                <div class="summary-line">
+                    <span>Consultation Fee</span>
+                    <span id="summaryConsultation">₹0</span>
+                </div>
+                <div class="summary-line">
+                    <span>Services Subtotal</span>
+                    <span id="summaryServices">₹0</span>
+                </div>
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span id="summarySubtotal">₹0</span>
+                </div>
+                <div class="summary-line">
+                    <span>GST (<span id="summaryTaxRate">18</span>%)</span>
+                    <span id="summaryTax">₹0</span>
+                </div>
+                <div class="summary-line discount" id="discountRow" style="display:none;">
+                    <span>Discount (<span id="summaryDiscountRate">0</span>%)</span>
+                    <span id="summaryDiscount">-₹0</span>
+                </div>
+                <div class="summary-line total">
+                    <span>Total Amount</span>
+                    <span id="summaryTotal">₹0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bill History -->
+        <section class="panel" style="margin-top:2rem;">
+            <h2>Invoice History</h2>
+            <div class="bill-search">
+                <input type="text" id="billSearch" placeholder="Search by patient name or invoice..." oninput="loadBills()">
+                <select id="statusFilter" onchange="loadBills()" style="width:150px;">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="partial">Partial</option>
+                    <option value="paid">Paid</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <ul id="billList"></ul>
+            <p id="noBills" class="empty-hint hidden">No bills found</p>
+        </section>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+// Initialize bill form
+let billItems = [];
+const procedureOptions = [
+    { name: "Blood Test", rate: 250 },
+    { name: "X-Ray", rate: 800 },
+    { name: "CT Scan", rate: 3500 },
+    { name: "MRI", rate: 8000 },
+    { name: "Ultrasound", rate: 1200 },
+    { name: "ECG", rate: 400 },
+    { name: "Echo", rate: 1800 },
+    { name: "Endoscopy", rate: 4500 },
+    { name: "Biopsy", rate: 2500 },
+    { name: "Stitching", rate: 800 },
+    { name: "Dressing", rate: 300 },
+    { name: "Injection", rate: 150 },
+    { name: "IV Drip", rate: 600 },
+    { name: "Oxygen", rate: 400 },
+    { name: "Nebulization", rate: 350 },
+    { name: "Physiotherapy", rate: 600 },
+    { name: "Vaccination", rate: 400 },
+    { name: "Dental Cleaning", rate: 800 },
+    { name: "Tooth Extraction", rate: 1200 },
+    { name: "Root Canal", rate: 3500 },
+    { name: "Vision Test", rate: 300 },
+    { name: "Hearing Test", rate: 500 },
+    { name: "Medicines", rate: 0 }
+];
+
+function updateDoctorFee() {
+    const select = document.getElementById('billingDoctor');
+    const display = document.getElementById('doctorFeeDisplay');
+    if (select.value) {
+        const parts = select.value.split('|');
+        const fee = parseInt(parts[2]);
+        display.innerHTML = `Consultation Fee: ₹${fee} (${parts[1]})`;
+        display.style.display = 'block';
+    } else {
+        display.style.display = 'none';
+    }
+    calculateTotals();
+}
+
+function addItemRow(service = null) {
+    const tbody = document.getElementById('itemsBody');
+    const row = document.createElement('tr');
+    row.className = 'item-row';
+    
+    const optionsHtml = procedureOptions.map(p => 
+        `<option value="${p.name}|${p.rate}" ${service && service.name === p.name ? 'selected' : ''}>${p.name}</option>`
+    ).join('');
+    
+    const qty = service ? service.quantity : 1;
+    const rate = service ? service.unitPrice : 0;
+    const total = qty * rate;
+    
+    row.innerHTML = `
+        <td>
+            <select class="item-name" onchange="updateItemRate(this)">
+                <option value="">Select service...</option>
+                ${optionsHtml}
+            </select>
+        </td>
+        <td><input type="number" class="item-qty" value="${qty}" min="1" onchange="calculateTotals()"></td>
+        <td><input type="number" class="item-rate" value="${rate}" min="0" onchange="calculateTotals()"></td>
+        <td class="item-total">₹${total}</td>
+        <td><button type="button" class="btn-remove" onclick="removeItemRow(this)">×</button></td>
+    `;
+    
+    tbody.appendChild(row);
+    if (!service) calculateTotals();
+}
+
+function removeItemRow(btn) {
+    btn.closest('tr').remove();
+    calculateTotals();
+}
+
+function updateItemRate(select) {
+    const row = select.closest('tr');
+    const rateInput = row.querySelector('.item-rate');
+    if (select.value) {
+        const parts = select.value.split('|');
+        rateInput.value = parts[1];
+    }
+    calculateTotals();
+}
+
+function calculateTotals() {
+    // Get doctor consultation fee
+    const doctorSelect = document.getElementById('billingDoctor');
+    let consultationFee = 0;
+    if (doctorSelect.value) {
+        const parts = doctorSelect.value.split('|');
+        consultationFee = parseInt(parts[2]) || 0;
+    }
+    
+    // Calculate items total
+    let servicesTotal = 0;
+    document.querySelectorAll('#itemsBody tr').forEach(row => {
+        const qty = parseInt(row.querySelector('.item-qty')?.value) || 0;
+        const rate = parseFloat(row.querySelector('.item-rate')?.value) || 0;
+        const total = qty * rate;
+        row.querySelector('.item-total').textContent = '₹' + total;
+        servicesTotal += total;
+    });
+    
+    const subtotal = consultationFee + servicesTotal;
+    
+    // Calculate tax and discount
+    const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+    const discountPercent = parseFloat(document.getElementById('discountPercent').value) || 0;
+    
+    const taxAmount = Math.round((subtotal * taxRate) / 100);
+    const discountAmount = Math.round((subtotal * discountPercent) / 100);
+    const total = subtotal + taxAmount - discountAmount;
+    
+    // Update summary panel
+    document.getElementById('summaryConsultation').textContent = '₹' + consultationFee;
+    document.getElementById('summaryServices').textContent = '₹' + servicesTotal;
+    document.getElementById('summarySubtotal').textContent = '₹' + subtotal;
+    document.getElementById('summaryTaxRate').textContent = taxRate;
+    document.getElementById('summaryTax').textContent = '₹' + taxAmount;
+    document.getElementById('summaryDiscountRate').textContent = discountPercent;
+    document.getElementById('summaryDiscount').textContent = '-₹' + discountAmount;
+    document.getElementById('summaryTotal').textContent = '₹' + total;
+    
+    // Show/hide discount row
+    document.getElementById('discountRow').style.display = discountAmount > 0 ? 'flex' : 'none';
+}
+
+async function createEnhancedBill() {
+    const btn = document.querySelector('.btn-generate');
+    const msg = document.getElementById('billMsg');
+    
+    // Validation
+    const patientName = document.getElementById('patientName').value.trim();
+    const doctorValue = document.getElementById('billingDoctor').value;
+    
+    if (!patientName) {
+        setMessage('billMsg', 'Patient name is required', 'error');
+        return;
+    }
+    if (!doctorValue) {
+        setMessage('billMsg', 'Please select a doctor', 'error');
+        return;
+    }
+    
+    // Collect items
+    const items = [];
+    document.querySelectorAll('#itemsBody tr').forEach(row => {
+        const nameSelect = row.querySelector('.item-name');
+        if (nameSelect.value) {
+            const parts = nameSelect.value.split('|');
+            const qty = parseInt(row.querySelector('.item-qty').value) || 1;
+            const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+            items.push({
+                name: parts[0],
+                quantity: qty,
+                unitPrice: rate
+            });
+        }
+    });
+    
+    const doctorParts = doctorValue.split('|');
+    
+    const payload = {
+        patientName,
+        patientAge: document.getElementById('patientAge').value,
+        patientGender: document.getElementById('patientGender').value,
+        patientPhone: document.getElementById('patientPhone').value,
+        patientEmail: document.getElementById('patientEmail').value,
+        doctor: {
+            name: doctorParts[0],
+            specialization: doctorParts[1]
+        },
+        items,
+        taxRate: parseFloat(document.getElementById('taxRate').value) || 18,
+        discountPercent: parseFloat(document.getElementById('discountPercent').value) || 0,
+        notes: document.getElementById('billNotes').value,
+        dueDate: document.getElementById('dueDate').value
+    };
+    
+    // Add appointment linkage if coming from appointment flow
+    if (window.linkedAppointment) {
+        payload.appointmentId = window.linkedAppointment.appointmentId;
+        payload.appointmentDate = window.linkedAppointment.date;
+        payload.appointmentTime = window.linkedAppointment.time;
+    }
+    
+    setLoading(btn, true, 'Generating...');
+    
+    try {
+        const res = await fetch(`${API_BASE}/billing`, {
+            method: 'POST',
+            headers: authHeaders(true),
+            body: JSON.stringify(payload)
+        });
+        
+        const json = await res.json();
+        
+        if (json.success) {
+            setMessage('billMsg', 'Invoice generated successfully! Appointment will be confirmed after payment.', 'success');
+            // Clear pending appointment
+            localStorage.removeItem("pendingAppointment");
+            window.linkedAppointment = null;
+            // Reset form
+            document.getElementById('patientName').value = '';
+            document.getElementById('itemsBody').innerHTML = '';
+            document.getElementById('discountPercent').value = 0;
+            document.getElementById('billNotes').value = '';
+            updateDoctorFee();
+            calculateTotals();
+            loadBills();
+        } else {
+            setMessage('billMsg', errorMessage(json), 'error');
+        }
+    } catch {
+        setMessage('billMsg', 'Failed to generate invoice', 'error');
+    }
+    
+    setLoading(btn, false);
+}
+
+// Set default due date (15 days from now)
+document.addEventListener('DOMContentLoaded', () => {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 15);
+    document.getElementById('dueDate').value = dueDate.toISOString().split('T')[0];
+    addItemRow(); // Add one empty row by default
+    
+    // Check if coming from appointment booking
+    const pendingAppt = localStorage.getItem("pendingAppointment");
+    if (pendingAppt) {
+        const appt = JSON.parse(pendingAppt);
+        // Pre-fill doctor
+        const doctorSelect = document.getElementById("billingDoctor");
+        if (doctorSelect && appt.doctor) {
+            // Find option with matching doctor name
+            const options = doctorSelect.options;
+            for (let i = 0; i < options.length; i++) {
+                if (options[i].value.startsWith(appt.doctor + "|")) {
+                    doctorSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            updateDoctorFee();
+        }
+        // Pre-fill patient name if available
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+        const patientName = document.getElementById("patientName");
+        if (patientName && user.name) {
+            patientName.value = user.name;
+        }
+        // Show info banner
+        const infoBanner = document.createElement("div");
+        infoBanner.className = "info-banner";
+        infoBanner.style.cssText = "background: #dbeafe; border: 1px solid #3b82f6; color: #1e40af; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem;";
+        infoBanner.innerHTML = `
+            <strong>📅 Appointment Linked</strong><br>
+            Doctor: ${appt.doctor}<br>
+            Date: ${appt.date} at ${appt.time}<br>
+            <small>Consultation Fee: ₹${appt.consultationFee}</small>
+        `;
+        const form = document.querySelector(".billing-form");
+        if (form) form.prepend(infoBanner);
+        
+        // Store appointment ID for later
+        window.linkedAppointment = appt;
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Appointments · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Full-width appointment form */
+        .appointment-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .appointment-layout { grid-template-columns: 1fr; }
+        }
+        .booking-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .booking-card h2 {
+            margin: 0 0 1.5rem;
+            font-size: 1.25rem;
+            color: var(--text);
+        }
+        .form-fullwidth input,
+        .form-fullwidth select {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+        .form-fullwidth .btn-primary {
+            width: 100%;
+            padding: 0.875rem;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+        }
+        .appointments-section {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>HealthCare+</h2>
+    <div class="nav-actions">
+        <button type="button" class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <a href="dashboard.html">Home</a>
+        <a href="appointment.html" class="active-nav">Appointments</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="billing.html">Billing</a>
+        <a href="ai.html">AI triage</a>
+        <a href="staff.html" class="nav-staff-only hidden">Staff desk</a>
+    </div>
+
+    <div class="content content-wide">
+        <header class="page-header">
+            <h1>Schedule a visit</h1>
+            <p class="lede">Real-time double-booking protection per doctor, date, and time slot.</p>
+        </header>
+
+        <div class="appointment-layout">
+            <!-- Booking Form Card -->
+            <div class="booking-card form-fullwidth">
+                <h2>Book Appointment</h2>
+                
+                <label class="field-label" for="doctor">Physician</label>
+                <select id="doctor">
+                    <option value="">Select Doctor</option>
+                    <option value="Dr. Sharma">Dr. Sharma - Cardiologist</option>
+                    <option value="Dr. Mehta">Dr. Mehta - Neurologist</option>
+                    <option value="Dr. Singh">Dr. Singh - Orthopedic</option>
+                    <option value="Dr. Verma">Dr. Verma - Dermatologist</option>
+                    <option value="Dr. Patel">Dr. Patel - Pediatrician</option>
+                    <option value="Dr. Gupta">Dr. Gupta - Oncologist</option>
+                    <option value="Dr. Kumar">Dr. Kumar - General Surgeon</option>
+                    <option value="Dr. Reddy">Dr. Reddy - ENT Specialist</option>
+                    <option value="Dr. Iyer">Dr. Iyer - Ophthalmologist</option>
+                    <option value="Dr. Nair">Dr. Nair - Psychiatrist</option>
+                    <option value="Dr. Joshi">Dr. Joshi - Gynecologist</option>
+                    <option value="Dr. Rao">Dr. Rao - Urologist</option>
+                    <option value="Dr. Desai">Dr. Desai - Gastroenterologist</option>
+                    <option value="Dr. Malhotra">Dr. Malhotra - Pulmonologist</option>
+                    <option value="Dr. Banerjee">Dr. Banerjee - Nephrologist</option>
+                    <option value="Dr. Choudhary">Dr. Choudhary - Endocrinologist</option>
+                    <option value="Dr. Saxena">Dr. Saxena - Rheumatologist</option>
+                    <option value="Dr. Khanna">Dr. Khanna - Plastic Surgeon</option>
+                    <option value="Dr. Agarwal">Dr. Agarwal - Dentist</option>
+                    <option value="Dr. Bhatia">Dr. Bhatia - Physiotherapist</option>
+                    <option value="Dr. Menon">Dr. Menon - Radiologist</option>
+                    <option value="Dr. Yadav">Dr. Yadav - Pathologist</option>
+                    <option value="Dr. Pandey">Dr. Pandey - Anesthesiologist</option>
+                    <option value="Dr. Ghosh">Dr. Ghosh - Hematologist</option>
+                    <option value="Dr. Kapoor">Dr. Kapoor - General Physician</option>
+                    <option value="Dr. Jain">Dr. Jain - Infectious Disease Specialist</option>
+                    <option value="Dr. Arora">Dr. Arora - Vascular Surgeon</option>
+                    <option value="Dr. Prasad">Dr. Prasad - Geriatrician</option>
+                    <option value="Dr. Kaur">Dr. Kaur - Sports Medicine Specialist</option>
+                    <option value="Dr. Mishra">Dr. Mishra - Allergist & Immunologist</option>
+                </select>
+
+                <div id="consultationFeeDisplay" style="background: #f0fdfa; padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0; font-size: 0.9rem; color: #0f766e; display: none;">
+                    💰 Consultation Fee: ₹<span id="feeAmount">--</span> (incl. 18% GST)
+                </div>
+
+                <label class="field-label" for="date">Date</label>
+                <input type="date" id="date">
+
+                <label class="field-label" for="time">Time</label>
+                <input type="time" id="time">
+
+                <button type="button" class="btn-primary" onclick="bookAppointment()">Book Appointment</button>
+
+                <p id="apptMsg" class="message-line" aria-live="polite"></p>
+            </div>
+
+            <!-- Appointments List -->
+            <div class="appointments-section">
+                <h2>Your Appointments</h2>
+                <ul id="apptList" class="appt-list"></ul>
+                <p id="noAppt" class="empty-hint hidden">No appointments yet</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+(function () {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+    }
+})();
+
+// Doctor consultation fees
+const doctorFees = {
+    "Dr. Sharma": 800, "Dr. Mehta": 750, "Dr. Gupta": 900, "Dr. Khanna": 1000,
+    "Dr. Singh": 600, "Dr. Verma": 550, "Dr. Joshi": 600, "Dr. Rao": 650,
+    "Dr. Desai": 600, "Dr. Malhotra": 550, "Dr. Banerjee": 600, "Dr. Iyer": 500,
+    "Dr. Reddy": 500, "Dr. Patel": 400, "Dr. Kumar": 500, "Dr. Nair": 450,
+    "Dr. Choudhary": 500, "Dr. Saxena": 500, "Dr. Agarwal": 350, "Dr. Bhatia": 400,
+    "Dr. Menon": 450, "Dr. Yadav": 400, "Dr. Pandey": 450, "Dr. Ghosh": 500,
+    "Dr. Kapoor": 400, "Dr. Jain": 550, "Dr. Arora": 750, "Dr. Prasad": 500,
+    "Dr. Kaur": 600, "Dr. Mishra": 500
+};
+
+// Show consultation fee when doctor is selected
+document.getElementById("doctor")?.addEventListener("change", function() {
+    const feeDisplay = document.getElementById("consultationFeeDisplay");
+    const feeAmount = document.getElementById("feeAmount");
+    const fee = doctorFees[this.value];
+    if (fee && feeDisplay && feeAmount) {
+        const totalWithGst = Math.round(fee * 1.18);
+        feeAmount.textContent = fee + " (₹" + totalWithGst + " with GST)";
+        feeDisplay.style.display = "block";
+    } else if (feeDisplay) {
+        feeDisplay.style.display = "none";
+    }
+});
+
+window.addEventListener("load", async function () {
+    await loadAppointments();
+    const list = document.getElementById("apptList");
+    const empty = document.getElementById("noAppt");
+    if (list && empty) {
+        const hasRows = list.querySelectorAll("li.list-card:not(.empty-state)").length > 0;
+        empty.classList.toggle("hidden", hasRows);
+    }
+});
+</script>
+
+</body>
+</html>

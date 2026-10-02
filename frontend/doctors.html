@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>HealthCare+</h2>
+    <div class="nav-actions">
+        <button type="button" class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <a href="dashboard.html">Home</a>
+        <a href="appointment.html">Appointments</a>
+        <a href="doctors.html" class="active-nav">Doctors</a>
+        <a href="billing.html">Billing</a>
+        <a href="ai.html">AI triage</a>
+        <a href="staff.html" class="nav-staff-only hidden">Staff desk</a>
+    </div>
+
+    <div class="content content-wide">
+        <header class="page-header">
+            <h1>Clinical directory</h1>
+            <p class="lede">Server-backed roster with client-side instant filtering. Offline fallback matches the bundled catalog.</p>
+        </header>
+
+        <div class="toolbar">
+            <input type="text" id="search" class="search-input" placeholder="Filter by name or specialization…" aria-label="Search doctors" oninput="searchDoctor()">
+            <div class="toolbar-meta">
+                <label class="field-label inline" for="sortBy">Sort</label>
+                <select id="sortBy" class="select-compact">
+                    <option value="name">Name</option>
+                    <option value="specialization">Specialization</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="doctorList" class="doctor-grid"></div>
+        <p id="noDoctors" class="empty-hint hidden">No doctors found</p>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+(function () {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+    }
+})();
+
+let doctorList = window.HOSPITAL_DOCTORS_FALLBACK || [];
+
+async function refreshCatalog() {
+    try {
+        const sort = document.getElementById("sortBy")?.value || "name";
+        const r = await fetch(
+            `${window.API_BASE}/doctors?limit=50&sort=${encodeURIComponent(sort)}`
+        );
+        const j = await r.json();
+        if (j.success && j.data && j.data.doctors && j.data.doctors.length) {
+            doctorList = j.data.doctors;
+            return;
+        }
+    } catch (e) {
+        /* use fallback */
+    }
+    doctorList = window.HOSPITAL_DOCTORS_FALLBACK || [];
+}
+
+function displayDoctors() {
+    const container = document.getElementById("doctorList");
+    const empty = document.getElementById("noDoctors");
+    if (!container) return;
+
+    const query = document.getElementById("search").value.toLowerCase();
+    container.innerHTML = "";
+
+    const results = doctorList.filter(
+        (d) =>
+            d.name.toLowerCase().includes(query) ||
+            d.specialization.toLowerCase().includes(query)
+    );
+
+    if (results.length === 0) {
+        empty.classList.remove("hidden");
+        return;
+    }
+
+    empty.classList.add("hidden");
+
+    results.forEach((d) => {
+        const card = document.createElement("div");
+        card.className = "doctor-card";
+        card.innerHTML = `
+            <h3>${d.name}</h3>
+            <p>${d.specialization}</p>
+            <button type="button" class="btn-secondary" onclick="selectDoctor('${d.name.replace(/'/g, "\\'")}')">Book</button>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function searchDoctor() {
+    displayDoctors();
+}
+
+function selectDoctor(name) {
+    localStorage.setItem("selectedDoctor", name);
+    window.location.href = "appointment.html";
+}
+
+window.addEventListener("load", async () => {
+    await refreshCatalog();
+    displayDoctors();
+});
+
+document.getElementById("sortBy").addEventListener("change", async () => {
+    await refreshCatalog();
+    displayDoctors();
+});
+</script>
+
+</body>
+</html>

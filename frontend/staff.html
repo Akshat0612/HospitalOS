@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Staff desk · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>HealthCare+</h2>
+    <div class="nav-actions">
+        <span class="nav-chip">Staff mode</span>
+        <button type="button" class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <a href="dashboard.html">Home</a>
+        <a href="appointment.html">Appointments</a>
+        <a href="staff.html" class="active-nav">Staff desk</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="billing.html">Billing</a>
+        <a href="ai.html">AI triage</a>
+    </div>
+
+    <div class="content content-wide">
+        <header class="page-header">
+            <h1>Staff operations</h1>
+            <p class="lede">Confirm visits, close loops, and monitor lightweight operational metrics. All triage output remains non-clinical simulation.</p>
+        </header>
+
+        <section class="panel">
+            <h2>Operational analytics</h2>
+            <div id="analyticsPanel" class="analytics-panel-loading">Loading…</div>
+        </section>
+
+        <section class="panel">
+            <h2>All appointments</h2>
+            <p class="muted small">Lifecycle: pending_payment → booked (after payment) → confirmed → completed (or cancelled/refunded).</p>
+            <ul id="apptList" class="appt-list"></ul>
+        </section>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

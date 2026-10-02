@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="8" passed="8" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-05-04T15:14:32 IST" name="Hospital Management System - Core Tests" finished-at="2026-05-04T15:16:29 IST" duration-ms="116567">
+    <groups>
+    </groups>
+    <test started-at="2026-05-04T15:14:32 IST" name="Authentication Tests" finished-at="2026-05-04T15:15:49 IST" duration-ms="77165">
+      <class name="com.hospital.tests.LoginTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:14:32 IST" name="setup" finished-at="2026-05-04T15:14:36 IST" duration-ms="3881" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testValidLogin()[pri:1, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:14:36 IST" name="testValidLogin" description="Valid login with correct credentials" finished-at="2026-05-04T15:14:48 IST" duration-ms="12307" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testValidLogin -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:14:48 IST" name="tearDown" finished-at="2026-05-04T15:14:51 IST" duration-ms="2270" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:14:51 IST" name="setup" finished-at="2026-05-04T15:14:53 IST" duration-ms="2144" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testInvalidLogin()[pri:2, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:14:53 IST" name="testInvalidLogin" description="Invalid login shows error message" finished-at="2026-05-04T15:15:05 IST" duration-ms="12595" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testInvalidLogin -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:15:05 IST" name="tearDown" finished-at="2026-05-04T15:15:08 IST" duration-ms="2328" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:15:08 IST" name="setup" finished-at="2026-05-04T15:15:10 IST" duration-ms="2083" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testEmptyCredentials()[pri:3, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:15:10 IST" name="testEmptyCredentials" description="Empty credentials shows validation" finished-at="2026-05-04T15:15:15 IST" duration-ms="5502" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEmptyCredentials -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.LoginTest@7c7a06ec]" started-at="2026-05-04T15:15:15 IST" name="tearDown" finished-at="2026-05-04T15:15:18 IST" duration-ms="2257" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.hospital.tests.LoginTest -->
+      <class name="com.hospital.tests.RegistrationTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:18 IST" name="setup" finished-at="2026-05-04T15:15:20 IST" duration-ms="2165" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testValidRegistration()[pri:1, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:20 IST" name="testValidRegistration" description="Register new user with valid details" finished-at="2026-05-04T15:15:27 IST" duration-ms="6689" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testValidRegistration -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:27 IST" name="tearDown" finished-at="2026-05-04T15:15:29 IST" duration-ms="2284" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:29 IST" name="setup" finished-at="2026-05-04T15:15:31 IST" duration-ms="1976" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testDuplicateEmailRegistration()[pri:2, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:31 IST" name="testDuplicateEmailRegistration" description="Duplicate email shows error" finished-at="2026-05-04T15:15:37 IST" duration-ms="6604" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testDuplicateEmailRegistration -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:37 IST" name="tearDown" finished-at="2026-05-04T15:15:40 IST" duration-ms="2300" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:40 IST" name="setup" finished-at="2026-05-04T15:15:42 IST" duration-ms="1936" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testEmptyFieldsValidation()[pri:3, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:42 IST" name="testEmptyFieldsValidation" description="Empty fields stay on registration page" finished-at="2026-05-04T15:15:47 IST" duration-ms="5492" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEmptyFieldsValidation -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.RegistrationTest@477b4cdf]" started-at="2026-05-04T15:15:47 IST" name="tearDown" finished-at="2026-05-04T15:15:49 IST" duration-ms="2283" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.hospital.tests.RegistrationTest -->
+    </test> <!-- Authentication Tests -->
+    <test started-at="2026-05-04T15:15:49 IST" name="Core Module Tests" finished-at="2026-05-04T15:16:29 IST" duration-ms="39352">
+      <class name="com.hospital.tests.DashboardTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.DashboardTest@17f7cd29]" started-at="2026-05-04T15:15:49 IST" name="setup" finished-at="2026-05-04T15:15:52 IST" duration-ms="2089" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testDashboardNavigation()[pri:1, instance:com.hospital.tests.DashboardTest@17f7cd29]" started-at="2026-05-04T15:15:52 IST" name="testDashboardNavigation" description="Dashboard navigation to all main pages" finished-at="2026-05-04T15:16:11 IST" duration-ms="19138" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testDashboardNavigation -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.DashboardTest@17f7cd29]" started-at="2026-05-04T15:16:11 IST" name="tearDown" finished-at="2026-05-04T15:16:13 IST" duration-ms="2359" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.hospital.tests.DashboardTest -->
+      <class name="com.hospital.tests.AppointmentTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:com.hospital.tests.AppointmentTest@7d8704ef]" started-at="2026-05-04T15:16:13 IST" name="setup" finished-at="2026-05-04T15:16:15 IST" duration-ms="1983" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- setup -->
+        <test-method signature="testConsultationFeeDisplay()[pri:1, instance:com.hospital.tests.AppointmentTest@7d8704ef]" started-at="2026-05-04T15:16:15 IST" name="testConsultationFeeDisplay" description="Consultation fee displayed for selected doctor" finished-at="2026-05-04T15:16:26 IST" duration-ms="11393" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testConsultationFeeDisplay -->
+        <test-method is-config="true" signature="tearDown()[pri:0, instance:com.hospital.tests.AppointmentTest@7d8704ef]" started-at="2026-05-04T15:16:26 IST" name="tearDown" finished-at="2026-05-04T15:16:29 IST" duration-ms="2359" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- tearDown -->
+      </class> <!-- com.hospital.tests.AppointmentTest -->
+    </test> <!-- Core Module Tests -->
+  </suite> <!-- Hospital Management System - Core Tests -->
+</testng-results>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>HealthCare+ Hospital Platform</h1>
+</header>
+
+<div class="login-container">
+    <div class="login-box">
+
+        <h2>Create account</h2>
+        <p class="muted">Patient access by default. Staff role unlocks scheduling desk + analytics when a valid onboarding code is supplied.</p>
+
+        <form id="registerForm">
+
+            <label class="field-label" for="regName">Full name</label>
+            <input type="text" id="regName" placeholder="Full name" required autocomplete="name">
+
+            <label class="field-label" for="regEmail">Email</label>
+            <input type="email" id="regEmail" placeholder="Email" required autocomplete="email">
+
+            <label class="field-label" for="regPass">Password</label>
+            <input type="password" id="regPass" placeholder="Minimum 3 characters" required autocomplete="new-password">
+
+            <details class="staff-onboard">
+                <summary>Staff onboarding (optional)</summary>
+                <label class="field-label" for="staffCode">Staff code from administrator</label>
+                <input type="password" id="staffCode" placeholder="Matches STAFF_ONBOARD_CODE in .env" autocomplete="off">
+            </details>
+
+            <button type="submit" id="registerBtn" class="btn-primary">Register</button>
+
+        </form>
+
+        <p id="regError" class="error-text" role="alert"></p>
+
+        <p class="link">
+            Already registered?
+            <a href="index.html">Sign in</a>
+        </p>
+
+    </div>
+</div>
+
+<footer class="footer">
+    <p>© 2026 HealthCare+ · Educational hospital management demo</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>

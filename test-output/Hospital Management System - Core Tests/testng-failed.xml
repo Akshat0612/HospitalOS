@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Failed suite [Hospital Management System - Core Tests]">
+  <listeners>
+    <listener class-name="org.testng.reporters.FailedReporter"/>
+  </listeners>
+  <test thread-count="5" name="Core Module Tests(failed)">
+    <classes>
+      <class name="com.hospital.tests.BillingTest">
+        <methods>
+          <include name="testGenerateBill"/>
+          <include name="setup"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- com.hospital.tests.BillingTest -->
+      <class name="com.hospital.tests.AppointmentTest">
+        <methods>
+          <include name="testBookAppointment"/>
+          <include name="setup"/>
+          <include name="tearDown"/>
+        </methods>
+      </class> <!-- com.hospital.tests.AppointmentTest -->
+    </classes>
+  </test> <!-- Core Module Tests(failed) -->
+</suite> <!-- Failed suite [Hospital Management System - Core Tests] -->

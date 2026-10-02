@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+    <h2>HealthCare+</h2>
+    <div class="nav-actions">
+        <span id="welcomeUser" class="nav-chip"></span>
+        <button type="button" class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <a href="dashboard.html" class="active-nav">Home</a>
+        <a href="appointment.html">Appointments</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="billing.html">Billing</a>
+        <a href="ai.html">AI triage</a>
+        <a href="staff.html" class="nav-staff-only hidden">Staff desk</a>
+    </div>
+
+    <div class="content content-wide">
+        <header class="page-header">
+            <h1>Welcome Back 👋</h1>
+            <p class="lede">Coordinate care pathways, billing, and educational triage tools from one hub.</p>
+        </header>
+
+        <div class="card-container">
+            <div class="card">
+                <h3>Appointments</h3>
+                <p>Book visits with conflict-aware scheduling.</p>
+                <button type="button" class="btn-primary" onclick="goTo('appointment.html')">Open</button>
+            </div>
+
+            <div class="card">
+                <h3>Doctors</h3>
+                <p>Search directory with live catalog API.</p>
+                <button type="button" class="btn-primary" onclick="goTo('doctors.html')">Search</button>
+            </div>
+
+            <div class="card">
+                <h3>Billing</h3>
+                <p>Invoices, payment simulation, PDF receipts.</p>
+                <button type="button" class="btn-primary" onclick="goTo('billing.html')">View</button>
+            </div>
+
+            <div class="card card-accent">
+                <h3>Triage assistant</h3>
+                <p>Heuristic urgency with persisted case history.</p>
+                <button type="button" class="btn-primary" onclick="goTo('ai.html')">Launch</button>
+            </div>
+
+            <div class="card nav-staff-only hidden">
+                <h3>Staff desk</h3>
+                <p>Confirm appointments and view analytics.</p>
+                <button type="button" class="btn-primary" onclick="goTo('staff.html')">Open</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+(function () {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+    }
+})();
+
+(function () {
+    const userText = document.getElementById("welcomeUser");
+    try {
+        const u = JSON.parse(localStorage.getItem("user") || "{}");
+        if (userText) {
+            userText.innerText = u.name ? `Hi, ${u.name}` : "Signed in";
+        }
+    } catch (e) {
+        if (userText) userText.innerText = "Signed in";
+    }
+})();
+
+function goTo(page) {
+    window.location.href = page;
+}
+</script>
+
+</body>
+</html>

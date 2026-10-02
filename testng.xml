@@ -1,0 +1,21 @@
+<suite name="Hospital Management System - Core Tests" parallel="false" verbose="1">
+
+    <listeners>
+        <listener class-name="org.testng.reporters.FailedReporter"/>
+    </listeners>
+
+    <test name="Authentication Tests">
+        <classes>
+            <class name="com.hospital.tests.LoginTest"/>
+            <class name="com.hospital.tests.RegistrationTest"/>
+        </classes>
+    </test>
+    
+    <test name="Core Module Tests">
+        <classes>
+            <class name="com.hospital.tests.DashboardTest"/>
+            <class name="com.hospital.tests.AppointmentTest"/>
+        </classes>
+    </test>
+
+</suite>

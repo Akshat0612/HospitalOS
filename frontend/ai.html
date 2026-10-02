@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Health Assistant · HealthCare+</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .ai-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        @media (max-width: 900px) { .ai-container { grid-template-columns: 1fr; } }
+        
+        .symptom-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+        .symptom-chip { 
+            padding: 0.5rem 1rem; 
+            border-radius: 20px; 
+            border: 1px solid #e2e8f0; 
+            background: #f8fafc; 
+            cursor: pointer; 
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .symptom-chip:hover { background: #e2e8f0; }
+        .symptom-chip.active { 
+            background: #0d9488; 
+            color: white; 
+            border-color: #0d9488;
+        }
+        .symptom-chip.emergency { border-color: #dc2626; color: #dc2626; }
+        .symptom-chip.active.emergency { background: #dc2626; color: white; }
+        
+        .ai-result-panel { 
+            background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%); 
+            border-radius: 12px; 
+            padding: 1.5rem; 
+            border: 1px solid #99f6e4;
+        }
+        .ai-result-panel.emergency { 
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); 
+            border-color: #fca5a5;
+        }
+        
+        .urgency-badge { 
+            display: inline-block; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 999px; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            text-transform: uppercase;
+        }
+        .urgency-emergency { background: #dc2626; color: white; }
+        .urgency-same_day { background: #d97706; color: white; }
+        .urgency-routine { background: #16a34a; color: white; }
+        
+        .confidence-bar { 
+            height: 8px; 
+            background: #e2e8f0; 
+            border-radius: 4px; 
+            overflow: hidden; 
+            margin: 0.5rem 0;
+        }
+        .confidence-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #0d9488, #14b8a6); 
+            border-radius: 4px; 
+            transition: width 0.5s ease;
+        }
+        
+        .doctor-card { 
+            background: white; 
+            border-radius: 8px; 
+            padding: 1rem; 
+            margin: 0.5rem 0;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .doctor-info h4 { margin: 0 0 0.25rem; }
+        .doctor-info span { font-size: 0.85rem; color: #64748b; }
+        .doctor-fee { font-weight: 600; color: #0d9488; }
+        
+        .conditions-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+        .condition-tag { 
+            background: #dbeafe; 
+            color: #1e40af; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 6px; 
+            font-size: 0.8rem;
+        }
+        
+        .emergency-banner { 
+            background: #dc2626; 
+            color: white; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .emergency-banner a { color: white; text-decoration: underline; }
+        
+        .ai-input-section { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid #e2e8f0; }
+        .ai-input-section h3 { margin: 0 0 1rem; font-size: 1rem; color: #64748b; }
+        
+        .description-input { 
+            width: 100%; 
+            min-height: 100px; 
+            padding: 0.75rem; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-family: inherit; 
+            font-size: 0.95rem;
+            resize: vertical;
+            margin-bottom: 1rem;
+        }
+        .description-input:focus { outline: none; border-color: #0d9488; }
+        
+        .disclaimer-box { 
+            background: #fef3c7; 
+            border: 1px solid #fcd34d; 
+            border-radius: 8px; 
+            padding: 0.75rem; 
+            font-size: 0.8rem; 
+            color: #92400e; 
+            margin-top: 1rem;
+        }
+        
+        .typing-indicator { 
+            display: none; 
+            align-items: center; 
+            gap: 0.5rem; 
+            color: #64748b; 
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        .typing-indicator.active { display: flex; }
+        .typing-dot { 
+            width: 8px; 
+            height: 8px; 
+            background: #0d9488; 
+            border-radius: 50%; 
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="navbar">
+    <h2>HealthCare+</h2>
+    <div class="nav-actions">
+        <button type="button" class="btn-ghost" onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<div class="main">
+    <div class="sidebar">
+        <a href="dashboard.html">Home</a>
+        <a href="appointment.html">Appointments</a>
+        <a href="doctors.html">Doctors</a>
+        <a href="billing.html">Billing</a>
+        <a href="ai.html" class="active-nav">AI Assistant</a>
+        <a href="staff.html" class="nav-staff-only hidden">Staff desk</a>
+    </div>
+
+    <div class="content content-wide">
+        <header class="page-header">
+            <h1>🤖 AI Health Assistant</h1>
+            <p class="lede">Describe your symptoms in natural language or select from common symptoms. Get instant AI-powered recommendations for the right doctor and department.</p>
+        </header>
+
+        <div class="ai-container">
+            <!-- Input Section -->
+            <div class="ai-input-section">
+                <h3>📝 Describe Your Symptoms</h3>
+                <textarea 
+                    id="symptomDescription" 
+                    class="description-input" 
+                    placeholder="Example: I've been having chest pain for 2 days, especially when I climb stairs. I also feel short of breath and tired..."
+                ></textarea>
+                
+                <h3>🎯 Quick Select Symptoms</h3>
+                <div class="symptom-chips" id="symptomChips">
+                    <button type="button" class="symptom-chip" data-symptom="fever">🌡️ Fever</button>
+                    <button type="button" class="symptom-chip" data-symptom="cough">😷 Cough</button>
+                    <button type="button" class="symptom-chip" data-symptom="headache">🤕 Headache</button>
+                    <button type="button" class="symptom-chip" data-symptom="chest pain">💔 Chest Pain</button>
+                    <button type="button" class="symptom-chip" data-symptom="stomach pain">🤢 Stomach Pain</button>
+                    <button type="button" class="symptom-chip" data-symptom="fatigue">😴 Fatigue</button>
+                    <button type="button" class="symptom-chip" data-symptom="joint pain">🦴 Joint Pain</button>
+                    <button type="button" class="symptom-chip" data-symptom="rash">🔴 Skin Rash</button>
+                    <button type="button" class="symptom-chip" data-symptom="shortness of breath">😮‍💨 Shortness of Breath</button>
+                    <button type="button" class="symptom-chip" data-symptom="dizziness">💫 Dizziness</button>
+                    <button type="button" class="symptom-chip" data-symptom="nausea">🤮 Nausea</button>
+                    <button type="button" class="symptom-chip" data-symptom="depression">😔 Depression/Anxiety</button>
+                    <button type="button" class="symptom-chip emergency" data-symptom="severe chest pain">🚨 Severe Chest Pain</button>
+                    <button type="button" class="symptom-chip emergency" data-symptom="can't breathe">🚨 Can't Breathe</button>
+                    <button type="button" class="symptom-chip emergency" data-symptom="unconscious">🚨 Unconscious</button>
+                </div>
+
+                <label class="field-label" for="severity">How severe are your symptoms?</label>
+                <select id="severity" style="width: 100%; margin-bottom: 1rem;">
+                    <option value="">Select severity level</option>
+                    <option value="Low">🟢 Low - Mild discomfort, can wait</option>
+                    <option value="Medium">🟡 Medium - Uncomfortable, need care soon</option>
+                    <option value="High">🔴 High - Very uncomfortable, need urgent care</option>
+                </select>
+
+                <button type="button" class="btn-primary" onclick="runEnhancedAI()" id="aiBtn" style="width: 100%;">
+                    🤖 Get AI Recommendations
+                </button>
+                
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <span>AI is analyzing your symptoms...</span>
+                </div>
+
+                <div class="disclaimer-box">
+                    ⚠️ <strong>Disclaimer:</strong> This AI assistant provides guidance based on symptom patterns but is NOT a substitute for professional medical diagnosis. Always consult a licensed healthcare provider.
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div>
+                <div id="aiResultBox" style="display: none;">
+                    <!-- Results will be populated here -->
+                </div>
+                
+                <div id="emptyState" style="text-align: center; padding: 3rem; color: #94a3b8;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🏥</div>
+                    <p>Enter your symptoms and click "Get AI Recommendations" to see intelligent health guidance.</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="panel" style="margin-top: 2rem;">
+            <h2>📋 Your AI Consultation History</h2>
+            <ul id="triageHistory" class="appt-list"></ul>
+            <p id="noHistory" class="empty-hint">No consultations yet</p>
+        </section>
+    </div>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+(function () {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "index.html";
+    }
+})();
+
+// Enhanced symptom chip selection
+document.querySelectorAll('.symptom-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+        this.classList.toggle('active');
+        // Add to description if selected
+        if (this.classList.contains('active')) {
+            const desc = document.getElementById('symptomDescription');
+            const symptom = this.dataset.symptom;
+            if (!desc.value.toLowerCase().includes(symptom.toLowerCase())) {
+                desc.value = desc.value ? desc.value + ', ' + symptom : symptom;
+            }
+        }
+    });
+});
+
+// Enhanced AI function
+async function runEnhancedAI() {
+    const btn = document.getElementById('aiBtn');
+    const resultBox = document.getElementById('aiResultBox');
+    const emptyState = document.getElementById('emptyState');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const description = document.getElementById('symptomDescription').value.trim();
+    const severity = document.getElementById('severity').value;
+    
+    // Get selected symptoms from chips
+    const selectedSymptoms = Array.from(document.querySelectorAll('.symptom-chip.active'))
+        .map(chip => chip.dataset.symptom);
+    
+    // Add description symptoms if any
+    if (description) {
+        const descLower = description.toLowerCase();
+        ['fever', 'cough', 'headache', 'chest pain', 'stomach pain', 'fatigue', 
+         'joint pain', 'rash', 'shortness of breath', 'dizziness', 'nausea', 'depression']
+            .forEach(s => {
+                if (descLower.includes(s) && !selectedSymptoms.includes(s)) {
+                    selectedSymptoms.push(s);
+                }
+            });
+    }
+    
+    if (selectedSymptoms.length === 0 && !description) {
+        alert('Please select symptoms or describe how you feel');
+        return;
+    }
+    
+    // Show loading
+    btn.disabled = true;
+    typingIndicator.classList.add('active');
+    
+    try {
+        const res = await fetch(`${API_BASE}/triage`, {
+            method: 'POST',
+            headers: authHeaders(true),
+            body: JSON.stringify({
+                symptoms: selectedSymptoms.length > 0 ? selectedSymptoms : ['general discomfort'],
+                severity: severity || 'Low',
+                description: description
+            })
+        });
+        
+        const json = await res.json();
+        
+        if (json.success) {
+            emptyState.style.display = 'none';
+            resultBox.style.display = 'block';
+            displayAIResult(json.data);
+            loadTriageHistory(); // Refresh history
+        } else {
+            alert(errorMessage(json));
+        }
+    } catch (e) {
+        console.error(e);
+        alert('AI analysis failed. Please try again.');
+    } finally {
+        btn.disabled = false;
+        typingIndicator.classList.remove('active');
+    }
+}
+
+function displayAIResult(data) {
+    const box = document.getElementById('aiResultBox');
+    const isEmergency = data.isEmergency || data.urgency === 'emergency';
+    const urgencyClass = isEmergency ? 'emergency' : (data.urgency === 'same_day' ? 'same_day' : 'routine');
+    const urgencyLabel = data.urgency.replace('_', ' ').toUpperCase();
+    
+    // Emergency banner
+    let emergencyBanner = '';
+    if (isEmergency) {
+        emergencyBanner = `
+            <div class="emergency-banner">
+                🚨 EMERGENCY: Please seek immediate medical attention or call <a href="tel:102">102</a> (Emergency Services)
+            </div>
+        `;
+    }
+    
+    // Doctor recommendations
+    let doctorsHtml = '';
+    if (data.recommendedDoctors && data.recommendedDoctors.length > 0) {
+        doctorsHtml = `
+            <h4 style="margin: 1rem 0 0.5rem; color: #0f172a;">👨‍⚕️ Recommended Doctors</h4>
+            ${data.recommendedDoctors.map((doc, i) => `
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <h4>#${i + 1} ${doc.name}</h4>
+                        <span>${doc.specialization} • Match: ${Math.round((doc.score / Math.max(...data.recommendedDoctors.map(d => d.score))) * 100)}%</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="doctor-fee">₹${doc.fee}</div>
+                        <a href="appointment.html" style="font-size: 0.8rem; color: #0d9488;">Book Now →</a>
+                    </div>
+                </div>
+            `).join('')}
+        `;
+    }
+    
+    // Possible conditions
+    let conditionsHtml = '';
+    if (data.possibleConditions && data.possibleConditions.length > 0) {
+        conditionsHtml = `
+            <h4 style="margin: 1rem 0 0.5rem; color: #0f172a;">🔍 Possible Conditions to Discuss</h4>
+            <div class="conditions-list">
+                ${data.possibleConditions.map(c => `<span class="condition-tag">${c}</span>`).join('')}
+            </div>
+        `;
+    }
+    
+    // External AI indicator
+    const aiBadge = data.hasExternalAI ? '<span style="font-size: 0.75rem; background: #8b5cf6; color: white; padding: 0.15rem 0.5rem; border-radius: 4px; margin-left: 0.5rem;">Enhanced AI</span>' : '';
+    
+    box.innerHTML = `
+        <div class="ai-result-panel ${isEmergency ? 'emergency' : ''}">
+            ${emergencyBanner}
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">🩺 AI Assessment ${aiBadge}</h3>
+                <span class="urgency-badge urgency-${urgencyClass}">${urgencyLabel}</span>
+            </div>
+            
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; margin-bottom: 0.25rem;">
+                    <span>AI Confidence</span>
+                    <span>${Math.round(data.confidence * 100)}%</span>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: ${data.confidence * 100}%"></div>
+                </div>
+            </div>
+            
+            <div style="background: white; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                <p style="margin: 0; line-height: 1.6; white-space: pre-line;">${data.recommendation}</p>
+            </div>
+            
+            ${conditionsHtml}
+            ${doctorsHtml}
+            
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.8rem; color: #64748b;">
+                <strong>Suggested Department:</strong> ${data.suggestedDepartment || 'General Physician'}
+            </div>
+            
+            <div class="disclaimer-box" style="margin-top: 1rem;">
+                ⚠️ ${data.disclaimer}
+            </div>
+        </div>
+    `;
+}
+
+// Load triage history on page load
+window.addEventListener('load', loadTriageHistory);
+</script>
+
+</body>
+</html>
